@@ -1,23 +1,18 @@
 {
+  "specVersion": "0.91",
   "entries": [
     {
       "identifier": "urn:air:flipclock.day:documentation:llms-txt",
       "displayName": "Flip Clock — LLM Documentation",
-      "type": "text/markdown",
+      "type": "text/markdown; profile=\"urn:air:agent-skills\"",
       "url": "https://flipclock.day/llms.txt",
-      "description": "Full documentation of Flip Clock for AI language models and autonomous agents."
-    },
-    {
-      "identifier": "urn:air:flipclock.day:app:main",
-      "displayName": "Flip Clock — Free Online Flip Clock",
-      "type": "text/html",
-      "url": "https://flipclock.day/",
-      "description": "Beautiful split-flap airport-style flip clock for any screen. Free, no install needed.",
+      "description": "Full documentation of Flip Clock for AI language models and autonomous agents. Covers features, usage, and technical details.",
       "representativeQueries": [
         "online flip clock",
-        "split flap clock website",
-        "free airport clock for screen",
-        "flip clock 12h 24h toggle"
+        "split flap airport style clock website",
+        "free flip clock for any screen",
+        "flip clock 12h 24h toggle",
+        "flip clock with screen wake lock"
       ]
     }
   ]
