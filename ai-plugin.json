@@ -1,16 +1,24 @@
 {
-  "version": "1.0",
-  "name": "Flip Clock",
-  "url": "https://flipclock.day/",
-  "description": "Beautiful split-flap airport-style flip clock for any screen. Free, no install needed. 12h/24h toggle, auto language detection, Wake Lock API.",
-  "llms_txt": "https://flipclock.day/llms.txt",
-  "sitemap": "https://flipclock.day/sitemap.xml",
-  "robots": "https://flipclock.day/robots.txt",
-  "application": {
-    "type": "WebApplication",
-    "category": "UtilitiesApplication",
-    "operatingSystem": "Any",
-    "price": "0",
-    "priceCurrency": "USD"
-  }
+  "entries": [
+    {
+      "identifier": "urn:air:flipclock.day:documentation:llms-txt",
+      "displayName": "Flip Clock — LLM Documentation",
+      "type": "text/markdown",
+      "url": "https://flipclock.day/llms.txt",
+      "description": "Full documentation of Flip Clock for AI language models and autonomous agents."
+    },
+    {
+      "identifier": "urn:air:flipclock.day:app:main",
+      "displayName": "Flip Clock — Free Online Flip Clock",
+      "type": "text/html",
+      "url": "https://flipclock.day/",
+      "description": "Beautiful split-flap airport-style flip clock for any screen. Free, no install needed.",
+      "representativeQueries": [
+        "online flip clock",
+        "split flap clock website",
+        "free airport clock for screen",
+        "flip clock 12h 24h toggle"
+      ]
+    }
+  ]
 }
