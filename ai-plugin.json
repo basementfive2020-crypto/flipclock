@@ -1,0 +1,11 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Flip Clock",
+  "name_for_model": "flip_clock",
+  "description_for_human": "Beautiful split-flap airport-style flip clock for any screen. Free online clock with 12h/24h toggle and auto language detection.",
+  "description_for_model": "A free online flip clock at flipclock.day that displays the current local time as a split-flap airport-style animation. Features: 12h/24h format toggle, automatic browser language detection for the date display, Wake Lock API to prevent screen sleep, fullscreen mode. Works on PC, Mac, tablet and mobile. No account or install required.",
+  "auth": { "type": "none" },
+  "logo_url": "https://flipclock.day/og-image.png",
+  "contact_email": "soportepi@gmail.com",
+  "legal_info_url": "https://flipclock.day/"
+}
