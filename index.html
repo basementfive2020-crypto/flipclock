@@ -1,0 +1,396 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Flip Clock</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap">
+
+<style>
+:root {
+  --bg: #0c0c0c;
+  --card-top: #232323;
+  --card-bot: #1c1c1c;
+  --digit-color: #d8d8d8;
+  --digit-dim: #888;
+  --split: #0c0c0c;
+  --dot: #b8963c;
+  --btn-bg: #181818;
+  --btn-border: #2a2a2a;
+  --btn-fg: #666;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; background: var(--bg); }
+
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 3.5vh, 40px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px;
+}
+
+/* ─── Clock row ─── */
+.clock {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.2vw, 26px);
+}
+
+/* ─── Flip unit ─── */
+.unit {
+  position: relative;
+  width: clamp(100px, 22vw, 240px);
+  height: clamp(128px, 28vw, 300px);
+  perspective: 1200px;
+}
+/* Celular vertical: unidades más altas que anchas */
+@media (max-width: 500px) {
+  .unit {
+    width: clamp(68px, 19vw, 100px);
+    height: clamp(88px, 24vw, 128px);
+  }
+  .clock { gap: clamp(5px, 1.5vw, 10px); }
+  .sep { gap: 10px; }
+  .dot { width: 8px; height: 8px; }
+}
+
+.half {
+  position: absolute;
+  left: 0; right: 0;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.half-top {
+  top: 0;
+  background: var(--card-top);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3);
+}
+.half-bot {
+  bottom: 0;
+  background: var(--card-bot);
+  box-shadow: inset 0 1px 0 rgba(0,0,0,0.4), inset 0 -1px 0 rgba(0,0,0,0.2);
+}
+.digit {
+  position: absolute;
+  left: 0; right: 0;
+  width: 100%;
+  height: 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(100px, 22.5vw, 248px);
+  color: var(--digit-color);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  pointer-events: none;
+}
+.half-top .digit { top: 0; }
+.half-bot .digit { top: -100%; }
+
+.gap {
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: var(--split);
+  z-index: 30;
+  pointer-events: none;
+}
+
+/* ─── Flaps ─── */
+.flap {
+  position: absolute;
+  left: 0; right: 0;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  border-radius: 6px;
+  backface-visibility: hidden;
+  z-index: 20;
+}
+.flap-top {
+  top: 0;
+  background: var(--card-top);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  transform-origin: bottom center;
+}
+.flap-bot {
+  bottom: 0;
+  background: var(--card-bot);
+  transform-origin: top center;
+}
+.flap-top .digit { top: 0; }
+.flap-bot .digit { top: -100%; }
+
+.flap-top.go { animation: dropTop 0.3s cubic-bezier(0.5,0,0.8,0.5) forwards; }
+.flap-bot.go { animation: riseBot 0.3s cubic-bezier(0.2,0.5,0.5,1) 0.24s forwards; }
+@keyframes dropTop {
+  0%   { transform: rotateX(0deg); }
+  100% { transform: rotateX(-90deg); box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 20px rgba(0,0,0,0.7); }
+}
+@keyframes riseBot {
+  0%   { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flap-top.go, .flap-bot.go { animation-duration: 0.01s; }
+}
+
+/* ─── Separator dots ─── */
+.sep {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.4vw, 26px);
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+.dot {
+  width: clamp(9px, 1.8vw, 17px);
+  height: clamp(9px, 1.8vw, 17px);
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 10px rgba(184,150,60,0.4);
+}
+
+/* ─── Info row (estilo versión 1) ─── */
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 4vw, 48px);
+  font-family: 'Inter', sans-serif;
+}
+.ampm {
+  font-size: clamp(13px, 2.2vw, 20px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--digit-dim);
+}
+.seconds-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sec-label {
+  font-size: clamp(9px, 1.3vw, 11px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+}
+.seconds {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(20px, 3.4vw, 34px);
+  color: var(--digit-dim);
+  font-variant-numeric: tabular-nums;
+  min-width: 2ch;
+  text-align: center;
+}
+.date-line {
+  font-size: clamp(11px, 1.8vw, 16px);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  white-space: nowrap;
+}
+
+/* ─── Buttons (estilo versión 1) ─── */
+.controls {
+  display: flex;
+  gap: 10px;
+}
+.ctrl {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  border-radius: 8px;
+  color: var(--btn-fg);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.07em;
+  padding: 9px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color .15s, background .15s;
+}
+.ctrl:hover { color: #bbb; background: #222; }
+.ctrl:focus-visible { outline: 2px solid #444; outline-offset: 2px; }
+
+.wake-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #2a2a2a;
+  transition: background .3s, box-shadow .3s;
+}
+.wake-dot.on { background: #6db86d; box-shadow: 0 0 6px rgba(109,184,109,0.5); }
+
+:fullscreen .controls, :-webkit-full-screen .controls { opacity: 0; transition: opacity .5s; }
+:fullscreen:hover .controls, :-webkit-full-screen:hover .controls { opacity: 1; }
+:fullscreen body, :-webkit-full-screen body { cursor: none; }
+:fullscreen body:hover .controls, :-webkit-full-screen body:hover .controls { cursor: default; }
+</style>
+
+<div class="page">
+  <div class="clock" id="clock" aria-live="polite">
+    <div class="unit" id="u0">
+      <div class="half half-top"><div class="digit st">0</div></div>
+      <div class="half half-bot"><div class="digit sb">0</div></div>
+      <div class="flap flap-top"><div class="digit ft">0</div></div>
+      <div class="flap flap-bot"><div class="digit fb">0</div></div>
+      <div class="gap"></div>
+    </div>
+    <div class="unit" id="u1">
+      <div class="half half-top"><div class="digit st">0</div></div>
+      <div class="half half-bot"><div class="digit sb">0</div></div>
+      <div class="flap flap-top"><div class="digit ft">0</div></div>
+      <div class="flap flap-bot"><div class="digit fb">0</div></div>
+      <div class="gap"></div>
+    </div>
+    <div class="sep"><div class="dot"></div><div class="dot"></div></div>
+    <div class="unit" id="u2">
+      <div class="half half-top"><div class="digit st">0</div></div>
+      <div class="half half-bot"><div class="digit sb">0</div></div>
+      <div class="flap flap-top"><div class="digit ft">0</div></div>
+      <div class="flap flap-bot"><div class="digit fb">0</div></div>
+      <div class="gap"></div>
+    </div>
+    <div class="unit" id="u3">
+      <div class="half half-top"><div class="digit st">0</div></div>
+      <div class="half half-bot"><div class="digit sb">0</div></div>
+      <div class="flap flap-top"><div class="digit ft">0</div></div>
+      <div class="flap flap-bot"><div class="digit fb">0</div></div>
+      <div class="gap"></div>
+    </div>
+  </div>
+
+  <div class="info-row">
+    <span class="ampm" id="ampm">AM</span>
+    <div class="seconds-wrap">
+      <span class="sec-label">seg</span>
+      <span class="seconds" id="secn">00</span>
+    </div>
+    <span class="date-line" id="dateline"></span>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl" onclick="toggleFS()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M1 4V1.5H3.5M8.5 1.5H11V4M11 8V10.5H8.5M3.5 10.5H1V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      Pantalla completa
+    </button>
+    <button class="ctrl" onclick="toggleWake()">
+      <span class="wake-dot" id="wd"></span>
+      Pantalla activa
+    </button>
+    <button class="ctrl" id="fmtBtn" onclick="toggleFmt()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M6 3.5V6l2 1.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <span id="fmtLbl">12h / 24h</span>
+    </button>
+  </div>
+</div>
+
+<script>
+// Wake Lock
+let wl = null, wantWake = false;
+async function requestWake() {
+  try {
+    wl = await navigator.wakeLock.request('screen');
+    wantWake = true;
+    document.getElementById('wd').classList.add('on');
+    wl.addEventListener('release', () => document.getElementById('wd').classList.remove('on'));
+  } catch(e) {}
+}
+async function toggleWake() {
+  if (wl && !wl.released) { await wl.release(); wl = null; wantWake = false; }
+  else await requestWake();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && wantWake) requestWake();
+});
+requestWake();
+
+// Fullscreen
+function toggleFS() {
+  const el = document.documentElement;
+  if (!document.fullscreenElement && !document.webkitFullscreenElement)
+    (el.requestFullscreen || el.webkitRequestFullscreen || (()=>{})).call(el);
+  else
+    (document.exitFullscreen || document.webkitExitFullscreen || (()=>{})).call(document);
+}
+
+// Flip
+const cur = ['','','',''];
+function pad2(n) { return String(n).padStart(2,'0'); }
+
+function flip(idx, newCh) {
+  if (cur[idx] === newCh) return;
+  const el = document.getElementById('u'+idx);
+  const st = el.querySelector('.st');
+  const sb = el.querySelector('.sb');
+  const ft = el.querySelector('.ft');
+  const fb = el.querySelector('.fb');
+  const fT = el.querySelector('.flap-top');
+  const fB = el.querySelector('.flap-bot');
+  const old = cur[idx] || newCh;
+  cur[idx] = newCh;
+  st.textContent = newCh;
+  sb.textContent = newCh;
+  ft.textContent = old;
+  fb.textContent = newCh;
+  fT.classList.remove('go'); fB.classList.remove('go');
+  void fT.offsetWidth;
+  fT.classList.add('go'); fB.classList.add('go');
+}
+
+// 12h/24h toggle — persisted in localStorage
+let use24 = localStorage.getItem('clk24') === '1';
+function toggleFmt() {
+  use24 = !use24;
+  localStorage.setItem('clk24', use24 ? '1' : '0');
+  updateFmtBtn();
+  // Reset flip state so digits re-render cleanly
+  cur.fill('');
+  tick();
+}
+function updateFmtBtn() {
+  document.getElementById('fmtLbl').textContent = use24 ? '24h → 12h' : '12h → 24h';
+  document.getElementById('ampm').style.display = use24 ? 'none' : '';
+}
+
+function tick() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  let ap = '';
+  if (use24) {
+    // 24-hour: 00–23
+  } else {
+    ap = h < 12 ? 'AM' : 'PM';
+    h = h % 12 || 12;
+  }
+  const hh = pad2(h), mm = pad2(m);
+  flip(0, hh[0]); flip(1, hh[1]);
+  flip(2, mm[0]); flip(3, mm[1]);
+  if (!use24) document.getElementById('ampm').textContent = ap;
+  document.getElementById('secn').textContent = pad2(s);
+  // Auto locale date using browser language
+  const lang = navigator.language || 'es';
+  document.getElementById('dateline').textContent =
+    now.toLocaleDateString(lang, { weekday:'short', day:'numeric', month:'short', year:'numeric' })
+        .replace(/,/g, '').toUpperCase();
+}
+updateFmtBtn();
+tick();
+setInterval(tick, 1000);
+</script>
+
+</body></html>
