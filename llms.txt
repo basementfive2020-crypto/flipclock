@@ -18,13 +18,18 @@ Anyone who wants a beautiful clock on their screen: at a desk, on a TV, on a tab
 
 ## Access
 
-- Web: https://flipclock.day/
+- Web: [https://flipclock.day/](https://flipclock.day/)
 - No account, no install, no ads — open the URL and it works
 
 ## Technical details
 
-- Single HTML file, no dependencies except Google Fonts (Bebas Neue)
+- Single HTML file, no dependencies except [Google Fonts (Bebas Neue)](https://fonts.google.com/specimen/Bebas+Neue)
 - Uses CSS 3D transforms for the flip animation
-- Uses navigator.wakeLock API to prevent screen sleep
-- Uses toLocaleDateString() for automatic locale-aware date formatting
-- Hosted on Cloudflare Pages
+- Uses [navigator.wakeLock API](https://developer.mozilla.org/en-US/docs/Web/API/WakeLock) to prevent screen sleep
+- Uses [toLocaleDateString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleDateString) for automatic locale-aware date formatting
+- Hosted on [Cloudflare Pages](https://pages.cloudflare.com/)
+
+## Source
+
+- Live app: [https://flipclock.day/](https://flipclock.day/)
+- Sitemap: [https://flipclock.day/sitemap.xml](https://flipclock.day/sitemap.xml)
