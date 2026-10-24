@@ -1,0 +1,30 @@
+# Flip Clock
+
+> A beautiful, free online split-flap (airport-style) flip clock that works on any screen — PC, Mac, tablet and mobile.
+
+## What it does
+
+- Displays the current local time as a split-flap flip clock with smooth card animations
+- Reads time automatically from the user's device — no setup needed
+- Detects the user's browser language and shows the date in that language automatically
+- Supports 12-hour and 24-hour formats with a toggle button (preference saved in browser)
+- Keeps the screen awake using the Wake Lock API (no screensaver interruptions)
+- Works in fullscreen mode with hidden cursor
+- Fully responsive — adapts to any screen size including phones in portrait and landscape
+
+## Who it's for
+
+Anyone who wants a beautiful clock on their screen: at a desk, on a TV, on a tablet used as a wall clock, or on a phone as a bedside clock.
+
+## Access
+
+- Web: https://flipclock.day/
+- No account, no install, no ads — open the URL and it works
+
+## Technical details
+
+- Single HTML file, no dependencies except Google Fonts (Bebas Neue)
+- Uses CSS 3D transforms for the flip animation
+- Uses navigator.wakeLock API to prevent screen sleep
+- Uses toLocaleDateString() for automatic locale-aware date formatting
+- Hosted on Cloudflare Pages
