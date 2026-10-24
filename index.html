@@ -203,6 +203,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
 .controls {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .ctrl {
   background: var(--btn-bg);
@@ -210,14 +212,15 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   border-radius: 8px;
   color: var(--btn-fg);
   font-family: 'Inter', sans-serif;
-  font-size: 12px;
+  font-size: clamp(11px, 1.8vw, 13px);
   letter-spacing: 0.07em;
-  padding: 9px 20px;
+  padding: clamp(9px, 1.5vh, 12px) clamp(14px, 2.5vw, 20px);
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
   transition: color .15s, background .15s;
+  white-space: nowrap;
 }
 .ctrl:hover { color: #bbb; background: #222; }
 .ctrl:focus-visible { outline: 2px solid #444; outline-offset: 2px; }
@@ -234,6 +237,19 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
 :fullscreen:hover .controls, :-webkit-full-screen:hover .controls { opacity: 1; }
 :fullscreen body, :-webkit-full-screen body { cursor: none; }
 :fullscreen body:hover .controls, :-webkit-full-screen body:hover .controls { cursor: default; }
+
+/* ─── Landscape mobile: shrink to fit height ─── */
+@media (max-height: 500px) {
+  .page { gap: clamp(8px, 1.5vh, 16px); padding-block: 12px; }
+  .unit {
+    width: clamp(56px, 18vh, 120px);
+    height: clamp(72px, 23vh, 152px);
+  }
+  .digit { font-size: clamp(56px, 18.5vh, 124px); }
+  .info-row { font-size: clamp(8px, 1.4vh, 11px); }
+  .ampm { font-size: clamp(11px, 1.8vh, 16px); padding: 2px 8px; }
+  .seconds { font-size: clamp(14px, 2.5vh, 20px); }
+}
 </style>
 
 <div class="page">
