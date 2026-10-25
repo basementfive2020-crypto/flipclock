@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,18 +22,6 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Flip Clock">
 
-<!-- PWA Manifest -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0c0c0c">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Flip Clock">
-
-<!-- AI Content Discovery (ARD spec) -->
-<link rel="ard" href="/ard.json" type="application/json">
-<link rel="ai-catalog" href="/ard.json" type="application/json">
-<meta name="ai-content-accessible" content="true">
-
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Flip Clock — Free Online Flip Clock for Any Screen">
@@ -54,6 +43,7 @@
 }
 </script>
 
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230c0c0c'/%3E%3Crect x='2' y='2' width='13' height='28' rx='3' fill='%23232323'/%3E%3Crect x='17' y='2' width='13' height='28' rx='3' fill='%23232323'/%3E%3Crect x='2' y='15' width='13' height='2' fill='%230c0c0c'/%3E%3Crect x='17' y='15' width='13' height='2' fill='%230c0c0c'/%3E%3Ccircle cx='15.5' cy='10' r='1.5' fill='%23b8963c'/%3E%3Ccircle cx='15.5' cy='22' r='1.5' fill='%23b8963c'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap">
 </head>
 <body>
@@ -68,11 +58,10 @@
   --dot: #b8963c;
   --btn-bg: #181818;
   --btn-border: #2a2a2a;
-  --btn-fg: #888;
+  --btn-fg: #666;
   color-scheme: dark;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 html, body { height: 100%; overflow: hidden; background: var(--bg); }
 
 .page {
@@ -236,7 +225,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   font-size: clamp(9px, 1.3vw, 11px);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #5a5a5a;
+  color: #3a3a3a;
 }
 .seconds {
   font-family: 'Bebas Neue', sans-serif;
@@ -250,7 +239,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   font-size: clamp(11px, 1.8vw, 16px);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #5a5a5a;
+  color: #3a3a3a;
   white-space: nowrap;
 }
 
@@ -308,8 +297,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
 </style>
 
 <div class="page">
-  <h1 class="sr-only">Flip Clock — Free Online Flip Clock</h1>
-  <div class="clock" id="clock" aria-live="polite" aria-label="Current time">
+  <div class="clock" id="clock" aria-live="polite">
     <div class="unit" id="u0">
       <div class="half half-top"><div class="digit st">0</div></div>
       <div class="half half-bot"><div class="digit sb">0</div></div>
@@ -351,18 +339,18 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   </div>
 
   <div class="controls">
-    <button class="ctrl" onclick="toggleFS()" aria-label="Toggle fullscreen">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+    <button class="ctrl" onclick="toggleFS()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
         <path d="M1 4V1.5H3.5M8.5 1.5H11V4M11 8V10.5H8.5M3.5 10.5H1V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
       </svg>
       Pantalla completa
     </button>
-    <button class="ctrl" onclick="toggleWake()" aria-label="Toggle screen wake lock">
-      <span class="wake-dot" id="wd" aria-hidden="true"></span>
+    <button class="ctrl" onclick="toggleWake()">
+      <span class="wake-dot" id="wd"></span>
       Pantalla activa
     </button>
-    <button class="ctrl" id="fmtBtn" onclick="toggleFmt()" aria-label="Toggle 12h/24h format">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+    <button class="ctrl" id="fmtBtn" onclick="toggleFmt()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
         <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/>
         <path d="M6 3.5V6l2 1.2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
       </svg>
@@ -466,3 +454,5 @@ setInterval(tick, 1000);
 </script>
 </body>
 </html>
+
+</body></html>
