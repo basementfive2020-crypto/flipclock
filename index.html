@@ -769,7 +769,14 @@ function tick() {
   const now = new Date();
   let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
 
-  if (wordsOnly && category !== 'ninguna') return; // palabras gestionadas por su propio timer
+  // Siempre actualizar segundos y fecha
+  document.getElementById('secn').textContent = pad2(s);
+  const locale2 = uiLang === 'en' ? 'en-US' : 'es-CO';
+  document.getElementById('dateline').textContent =
+    now.toLocaleDateString(locale2, { weekday:'short', day:'numeric', month:'short', year:'numeric' })
+        .replace(/,/g, '').toUpperCase();
+
+  if (wordsOnly && category !== 'ninguna') return; // dígitos gestionados por su propio timer
 
   if ((s === 15 || s === 30 || s === 45) && !showingWord && category !== 'ninguna') showWord();
 
@@ -785,11 +792,6 @@ function tick() {
     if (!use24) document.getElementById('ampm').textContent = ap;
   }
 
-  document.getElementById('secn').textContent = pad2(s);
-  const locale = uiLang === 'en' ? 'en-US' : 'es-CO';
-  document.getElementById('dateline').textContent =
-    now.toLocaleDateString(locale, { weekday:'short', day:'numeric', month:'short', year:'numeric' })
-        .replace(/,/g, '').toUpperCase();
 }
 
 updateFmtBtn();
