@@ -73,14 +73,12 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   padding-block: 32px;
 }
 
-/* ─── Clock row ─── */
 .clock {
   display: flex;
   align-items: center;
   gap: clamp(10px, 2.2vw, 26px);
 }
 
-/* ─── Flip unit ─── */
 .unit {
   position: relative;
   width: clamp(100px, 22vw, 240px);
@@ -139,7 +137,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   pointer-events: none;
 }
 
-/* ─── Flaps ─── */
 .flap {
   position: absolute;
   left: 0; right: 0;
@@ -177,7 +174,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   .flap-top.go, .flap-bot.go { animation-duration: 0.01s; }
 }
 
-/* ─── Separator dots ─── */
 .sep {
   display: flex;
   flex-direction: column;
@@ -194,7 +190,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   transition: background 0.4s, box-shadow 0.4s;
 }
 
-/* ─── Word label ─── */
 .word-label {
   font-family: 'Inter', sans-serif;
   font-size: clamp(9px, 1.2vw, 11px);
@@ -207,7 +202,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
 }
 .word-label.visible { opacity: 1; }
 
-/* ─── Info row ─── */
 .info-row {
   display: flex;
   align-items: center;
@@ -244,7 +238,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   white-space: nowrap;
 }
 
-/* ─── Category menu ─── */
 .cat-menu {
   display: flex;
   gap: 8px;
@@ -285,7 +278,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
   flex-shrink: 0;
 }
 
-/* ─── Buttons ─── */
 .controls {
   display: flex;
   gap: 10px;
@@ -319,10 +311,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
 }
 .wake-dot.on { background: #6db86d; box-shadow: 0 0 6px rgba(109,184,109,0.5); }
 
-/* Fullscreen hide — manejado directamente por JS */
 .controls, .cat-menu { transition: opacity .4s; }
 
-/* ─── Landscape mobile ─── */
 @media (max-height: 500px) {
   .page { gap: clamp(6px, 1.2vh, 12px); padding-block: 10px; }
   .unit { width: clamp(56px, 18vh, 120px); height: clamp(72px, 23vh, 152px); }
@@ -367,7 +357,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
     </div>
   </div>
 
-  <!-- Word category label -->
   <div class="word-label" id="wordLabel">&nbsp;</div>
 
   <div class="info-row">
@@ -379,7 +368,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
     <span class="date-line" id="dateline"></span>
   </div>
 
-  <!-- Category menu -->
   <div class="cat-menu" id="catMenu">
     <button class="cat-btn active" data-cat="ninguna" onclick="setCategory('ninguna')">
       <span class="dot-cat" style="background:#444"></span> ⏱ Solo hora
@@ -431,12 +419,11 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
 </div>
 
 <script>
-// ─── Word lists by category ───
 const WORDS = {
   espiritual: [
     {w:'DIOS',l:'es'},{w:'ALMA',l:'es'},{w:'FIEL',l:'es'},
     {w:'REZA',l:'es'},{w:'CREE',l:'es'},{w:'OBRA',l:'es'},{w:'AMEN',l:'es'},
-    {w:'CRUZ',l:'es'},{w:'ORAR',l:'es'},{w:'BESO',l:'es'},
+    {w:'CRUZ',l:'es'},{w:'ORAR',l:'es'},
     {w:'GOD' ,l:'en'},{w:'HOLY',l:'en'},{w:'PRAY',l:'en'},{w:'SOUL',l:'en'},
     {w:'BORN',l:'en'},{w:'WORD',l:'en'},{w:'PURE',l:'en'},{w:'AMEN',l:'en'},
     {w:'HOPE',l:'en'},{w:'LORD',l:'en'}
@@ -450,8 +437,11 @@ const WORDS = {
     {w:'KIND',l:'en'},{w:'WARM',l:'en'},{w:'HOLD',l:'en'}
   ],
   paz: [
-    {w:'CURA',l:'es'},{w:'AQUI',l:'es'},{w:'SANA',l:'es'},
+    {w:'PAZ' ,l:'es'},{w:'CURA',l:'es'},{w:'AQUI',l:'es'},{w:'SANA',l:'es'},
     {w:'LEVE',l:'es'},{w:'VALE',l:'es'},{w:'BIEN',l:'es'},
+    {w:'AURA',l:'es'},{w:'ALBA',l:'es'},{w:'FLOR',l:'es'},
+    {w:'LUNA',l:'es'},{w:'VELA',l:'es'},{w:'NUBE',l:'es'},
+    {w:'PURO',l:'es'},{w:'OLAS',l:'es'},
     {w:'HEAL',l:'en'},{w:'REST',l:'en'},{w:'CALM',l:'en'},{w:'FREE',l:'en'},
     {w:'WILL',l:'en'},{w:'SOFT',l:'en'},{w:'EASY',l:'en'},{w:'HUSH',l:'en'},
     {w:'SLOW',l:'en'}
@@ -465,7 +455,6 @@ const WORDS = {
   ]
 };
 
-// Color per category
 const CAT_COLOR = {
   espiritual: '#c4a7f0',
   amor:       '#f07a96',
@@ -474,13 +463,12 @@ const CAT_COLOR = {
   aleatoria:  '#d8c080'
 };
 
-// ─── Category state ───
 let category = localStorage.getItem('clkCat') || 'ninguna';
-let wordIdx = {};  // per-category round-robin index
+let wordIdx = {};
 
 function getWord() {
   const cats = Object.keys(WORDS);
-  const filterLang = uiLang; // 'es' or 'en'
+  const filterLang = uiLang;
   const filtered = cat => (WORDS[cat] || []).filter(w => w.l === filterLang);
 
   if (category === 'aleatoria') {
@@ -516,9 +504,7 @@ function setCategory(cat) {
     if (isActive) b.style.setProperty('--cat-active-color', color);
     else b.style.removeProperty('--cat-active-color');
   });
-  // Show first word immediately when activating a category
   if (cat !== 'ninguna' && !showingWord) showWord();
-  // If switching back to solo hora, cancel any pending word
   if (cat === 'ninguna') {
     clearTimeout(wordTimer);
     showingWord = false;
@@ -529,14 +515,12 @@ function setCategory(cat) {
   }
 }
 
-// Init active button with color
 document.querySelectorAll('.cat-btn').forEach(b => {
   const isActive = b.dataset.cat === category;
   b.classList.toggle('active', isActive);
   if (isActive) b.style.setProperty('--cat-active-color', CAT_ACTIVE_COLOR[category] || '#444');
 });
 
-// ─── Wake Lock ───
 let wl = null, wantWake = false;
 async function requestWake() {
   try {
@@ -555,7 +539,6 @@ document.addEventListener('visibilitychange', () => {
 });
 requestWake();
 
-// ─── Fullscreen ───
 let fsActive = false;
 let moveTimer;
 const UI_ELEMENTS = () => [
@@ -590,7 +573,6 @@ function toggleFS() {
   }
 }
 
-// fullscreenchange maneja entrada Y salida
 ['fullscreenchange','webkitfullscreenchange','mozfullscreenchange','MSFullscreenChange']
   .forEach(ev => document.addEventListener(ev, () => {
     const inFS = !!(document.fullscreenElement || document.webkitFullscreenElement
@@ -598,7 +580,6 @@ function toggleFS() {
     setFS(inFS);
   }));
 
-// Mostrar UI brevemente al mover el mouse en fullscreen
 document.addEventListener('mousemove', () => {
   if (!fsActive) return;
   showUI();
@@ -606,7 +587,6 @@ document.addEventListener('mousemove', () => {
   moveTimer = setTimeout(() => { if (fsActive) hideUI(); }, 2500);
 });
 
-// ─── Flip ───
 const cur = ['','','',''];
 function pad2(n) { return String(n).padStart(2,'0'); }
 
@@ -636,7 +616,6 @@ function flip(idx, newCh) {
   fT.classList.add('go'); fB.classList.add('go');
 }
 
-// ─── Word display ───
 let showingWord = false;
 let wordTimer = null;
 
@@ -651,7 +630,6 @@ function showWord() {
 
   for (let i = 0; i < 4; i++) flip(i, word[i]);
 
-  // Show category label
   const lbl = document.getElementById('wordLabel');
   const catNames = {es:{espiritual:'ESPIRITUAL',amor:'AMOR',paz:'PAZ',motivacion:'MOTIVACIÓN',aleatoria:'ALEATORIA'},en:{espiritual:'SPIRITUAL',amor:'LOVE',paz:'PEACE',motivacion:'MOTIVATION',aleatoria:'RANDOM'}};
   const catName = (catNames[uiLang]||catNames.es)[entry.cat] || entry.cat.toUpperCase();
@@ -669,7 +647,6 @@ function showWord() {
   }, 3500);
 }
 
-// ─── 12h/24h ───
 let use24 = localStorage.getItem('clk24') === '1';
 function toggleFmt() {
   use24 = !use24;
@@ -683,7 +660,6 @@ function updateFmtBtn() {
   document.getElementById('ampm').style.display = use24 ? 'none' : '';
 }
 
-// ─── UI Language ───
 let uiLang = localStorage.getItem('clkLang') || 'es';
 
 function applyUILang() {
@@ -706,7 +682,6 @@ function toggleLang() {
   uiLang = uiLang === 'es' ? 'en' : 'es';
   localStorage.setItem('clkLang', uiLang);
   applyUILang();
-  // Restore active cat button state after innerHTML rebuild
   document.querySelectorAll('.cat-btn').forEach(b => {
     const isActive = b.dataset.cat === category;
     b.classList.toggle('active', isActive);
@@ -715,15 +690,12 @@ function toggleLang() {
   });
 }
 
-// ─── Tick ───
 function tick() {
   const now = new Date();
   let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
 
-  // Trigger word on each new minute (s === 0)
   if ((s === 15 || s === 30 || s === 45) && !showingWord && category !== 'ninguna') showWord();
 
-  // Update digits only when not showing a word
   if (!showingWord) {
     let ap = '';
     if (!use24) {
