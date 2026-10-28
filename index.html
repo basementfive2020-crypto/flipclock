@@ -415,6 +415,14 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); }
       </svg>
       <span id="fmtLbl">12h / 24h</span>
     </button>
+    <button class="ctrl" id="wordsBtn" onclick="toggleWordsOnly()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <rect x="1" y="2.5" width="10" height="1.5" rx="0.75" fill="currentColor"/>
+        <rect x="1" y="5.25" width="7" height="1.5" rx="0.75" fill="currentColor"/>
+        <rect x="1" y="8" width="8.5" height="1.5" rx="0.75" fill="currentColor"/>
+      </svg>
+      <span id="wordsBtnLbl">Solo palabras</span>
+    </button>
   </div>
 </div>
 
@@ -504,9 +512,14 @@ function setCategory(cat) {
     if (isActive) b.style.setProperty('--cat-active-color', color);
     else b.style.removeProperty('--cat-active-color');
   });
-  if (cat !== 'ninguna' && !showingWord) showWord();
+  if (wordsOnly) {
+    applyWordsOnly(); // reinicia loop con nueva categoría
+  } else if (cat !== 'ninguna' && !showingWord) {
+    showWord();
+  }
   if (cat === 'ninguna') {
     clearTimeout(wordTimer);
+    stopWordsOnlyLoop();
     showingWord = false;
     setDigitColor('');
     document.getElementById('wordLabel').classList.remove('visible');
@@ -647,6 +660,67 @@ function showWord() {
   }, 3500);
 }
 
+// ─── Words Only mode ───
+let wordsOnly = localStorage.getItem('clkWordsOnly') === '1';
+let wordsOnlyTimer = null;
+
+function toggleWordsOnly() {
+  wordsOnly = !wordsOnly;
+  localStorage.setItem('clkWordsOnly', wordsOnly ? '1' : '0');
+  applyWordsOnly();
+}
+
+function applyWordsOnly() {
+  const btn = document.getElementById('wordsBtn');
+  if (wordsOnly && category !== 'ninguna') {
+    const color = CAT_ACTIVE_COLOR[category] || '#7ab8f5';
+    btn.style.color = color;
+    btn.style.borderColor = color;
+    btn.style.boxShadow = `0 0 10px ${color}44`;
+    startWordsOnlyLoop();
+  } else {
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    btn.style.boxShadow = '';
+    stopWordsOnlyLoop();
+    if (!showingWord) { cur.fill(''); tick(); }
+  }
+}
+
+function startWordsOnlyLoop() {
+  stopWordsOnlyLoop();
+  showWordsOnlyWord();
+  wordsOnlyTimer = setInterval(showWordsOnlyWord, 15000);
+}
+
+function stopWordsOnlyLoop() {
+  if (wordsOnlyTimer) { clearInterval(wordsOnlyTimer); wordsOnlyTimer = null; }
+  showingWord = false;
+  clearTimeout(wordTimer);
+  document.getElementById('wordLabel').classList.remove('visible');
+  setDigitColor('');
+}
+
+function showWordsOnlyWord() {
+  const pool = category === 'aleatoria'
+    ? Object.values(WORDS).flat().filter(w => w.l === uiLang)
+    : (WORDS[category] || []).filter(w => w.l === uiLang);
+  if (!pool.length) return;
+  const entry = pool[Math.floor(Math.random() * pool.length)];
+  const word = entry.w.padEnd(4, ' ');
+  const cat = category === 'aleatoria' ? Object.keys(WORDS)[Math.floor(Math.random()*Object.keys(WORDS).length)] : category;
+  const color = CAT_COLOR[cat] || CAT_COLOR.aleatoria;
+  showingWord = true;
+  setDigitColor(color);
+  for (let i = 0; i < 4; i++) flip(i, word[i]);
+  const lbl = document.getElementById('wordLabel');
+  const catNames = {es:{espiritual:'ESPIRITUAL',amor:'AMOR',paz:'PAZ',motivacion:'MOTIVACIÓN',aleatoria:'ALEATORIA'},en:{espiritual:'SPIRITUAL',amor:'LOVE',paz:'PEACE',motivacion:'MOTIVATION',aleatoria:'RANDOM'}};
+  const catName = (catNames[uiLang]||catNames.es)[category] || category.toUpperCase();
+  lbl.textContent = catName + ' · ' + (entry.l === 'es' ? 'ES' : 'EN');
+  lbl.style.color = color;
+  lbl.classList.add('visible');
+}
+
 let use24 = localStorage.getItem('clk24') === '1';
 function toggleFmt() {
   use24 = !use24;
@@ -676,6 +750,7 @@ function applyUILang() {
   document.getElementById('btnWakeLabel').textContent = uiLang === 'es' ? 'Pantalla activa' : 'Active screen';
   document.querySelector('.sec-label').textContent = uiLang === 'es' ? 'seg' : 'sec';
   document.getElementById('langLbl').textContent = uiLang === 'es' ? 'ES → EN' : 'EN → ES';
+  document.getElementById('wordsBtnLbl').textContent = uiLang === 'es' ? 'Solo palabras' : 'Words only';
 }
 
 function toggleLang() {
@@ -693,6 +768,8 @@ function toggleLang() {
 function tick() {
   const now = new Date();
   let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+
+  if (wordsOnly && category !== 'ninguna') return; // palabras gestionadas por su propio timer
 
   if ((s === 15 || s === 30 || s === 45) && !showingWord && category !== 'ninguna') showWord();
 
@@ -717,6 +794,7 @@ function tick() {
 
 updateFmtBtn();
 applyUILang();
+applyWordsOnly();
 tick();
 setInterval(tick, 1000);
 </script>
