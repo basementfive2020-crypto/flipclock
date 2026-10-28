@@ -689,12 +689,10 @@ function applyWordsOnly() {
 
 function startWordsOnlyLoop() {
   stopWordsOnlyLoop();
-  showWordsOnlyWord();
-  wordsOnlyTimer = setInterval(showWordsOnlyWord, 15000);
+  showWordsOnlyWord(); // muestra una palabra de inmediato
 }
 
 function stopWordsOnlyLoop() {
-  if (wordsOnlyTimer) { clearInterval(wordsOnlyTimer); wordsOnlyTimer = null; }
   showingWord = false;
   clearTimeout(wordTimer);
   document.getElementById('wordLabel').classList.remove('visible');
@@ -776,7 +774,11 @@ function tick() {
     now.toLocaleDateString(locale2, { weekday:'short', day:'numeric', month:'short', year:'numeric' })
         .replace(/,/g, '').toUpperCase();
 
-  if (wordsOnly && category !== 'ninguna') return; // dígitos gestionados por su propio timer
+  if (wordsOnly && category !== 'ninguna') {
+    // Cambiar palabra en :00, :15, :30, :45
+    if (s === 0 || s === 15 || s === 30 || s === 45) showWordsOnlyWord();
+    return;
+  }
 
   if ((s === 15 || s === 30 || s === 45) && !showingWord && category !== 'ninguna') showWord();
 
